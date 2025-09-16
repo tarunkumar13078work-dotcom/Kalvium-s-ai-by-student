@@ -1,0 +1,205 @@
+/* Basic resets and fonts */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #232526, #414345);
+    color: #fff;
+}
+
+.container {
+    display: flex;
+    max-width: 1200px;
+    margin: 20px auto;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    backdrop-filter: blur(10px);
+    overflow: hidden;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+/* Sidebar FAQ */
+.sidebar {
+    width: 300px;
+    min-width: 250px;
+    padding: 20px;
+    background: rgba(40, 44, 52, 0.75);
+    backdrop-filter: blur(5px);
+}
+
+.sidebar h2 {
+    text-align: center;
+    color: #ffccff;
+    margin-bottom: 20px;
+    font-size: 1.5em;
+}
+
+.faq-category {
+    margin-bottom: 15px;
+}
+
+.faq-toggle {
+    width: 100%;
+    background: linear-gradient(45deg, #ff758c, #ff9472);
+    color: #fff;
+    border: none;
+    padding: 10px;
+    font-size: 1em;
+    text-align: left;
+    border-radius: 5px;
+    cursor: pointer;
+    position: relative;
+    transition: opacity 0.3s;
+}
+
+.faq-toggle:hover {
+    opacity: 0.8;
+}
+
+.faq-questions {
+    max-height: 0;
+    overflow: hidden;
+    margin-top: 5px;
+    padding-left: 10px;
+    transition: max-height 0.3s ease;
+}
+
+.faq-questions.open {
+    max-height: 500px;
+}
+
+.faq-questions p {
+    margin: 8px 0;
+    cursor: pointer;
+    padding: 5px 8px;
+    border-left: 3px solid #ff758c;
+    color: #ffe6e6;
+    transition: background 0.3s;
+}
+
+.faq-questions p:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* Chat container */
+.chat-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background: rgba(52, 58, 64, 0.8);
+    backdrop-filter: blur(5px);
+}
+
+.chat-container h1 {
+    text-align: center;
+    margin: 20px 0 10px;
+    font-size: 2em;
+    background-image: linear-gradient(90deg, #eaafc8, #654ea3);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+#chat-window {
+    flex: 1;
+    padding: 20px;
+    margin: 0 20px;
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 10px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Chat messages */
+.bot-msg, .user-msg {
+    max-width: 70%;
+    margin: 8px 0;
+    padding: 10px 15px;
+    border-radius: 10px;
+    word-wrap: break-word;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.3s ease-out;
+}
+
+.bot-msg {
+    background: linear-gradient(135deg, #ff758c, #ff9472);
+    color: #fff;
+    align-self: flex-start;
+}
+
+.user-msg {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    align-self: flex-end;
+    margin-left: auto;
+}
+
+/* Show message (animation end state) */
+.bot-msg.show, .user-msg.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Input area */
+.input-area {
+    display: flex;
+    padding: 10px 20px;
+    background: rgba(40, 44, 52, 0.85);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.input-area input {
+    flex: 1;
+    padding: 10px 15px;
+    font-size: 1em;
+    border: none;
+    border-radius: 20px 0 0 20px;
+    outline: none;
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+}
+
+.input-area input::placeholder {
+    color: #ccc;
+}
+
+.input-area button {
+    padding: 0 20px;
+    font-size: 1em;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    background: linear-gradient(45deg, #ff758c, #ff9472);
+    color: #fff;
+    border-radius: 0 20px 20px 0;
+    transition: opacity 0.3s;
+}
+
+.input-area button:hover {
+    opacity: 0.8;
+}
+
+/* Scrollbar styling */
+#chat-window::-webkit-scrollbar {
+    width: 6px;
+}
+
+#chat-window::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 3px;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+    }
+    .sidebar {
+        width: 100%;
+    }
+    .chat-container {
+        width: 100%;
+    }
+}

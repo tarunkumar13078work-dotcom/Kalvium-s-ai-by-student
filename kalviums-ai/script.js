@@ -58,6 +58,14 @@ const qaList = {
     "What is an API?": "API stands for Application Programming Interface; it's a set of rules that allows programs to communicate with each other."
 };
 
+// Configuration
+const CONFIG = {
+    typingDelay: {
+        base: 1000,
+        random: 500
+    }
+};
+
 // Global state management
 const state = {
     voiceEnabled: true,
@@ -236,14 +244,78 @@ function sendMessage(msg) {
         // Speak the answer
         speak(answer);
         
-    }, 1000 + Math.random() * 500); // Random delay for more natural feel
+    }, CONFIG.typingDelay.base + Math.random() * CONFIG.typingDelay.random);
 }
 
-// Clear chat function
+// Clear chat function with custom confirmation
 function clearChat() {
     if (state.messageHistory.length === 0) return;
     
-    if (confirm('Are you sure you want to clear the chat history?')) {
+    // Create custom modal
+    const modal = document.createElement('div');
+    modal.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+        animation: fadeIn 0.2s ease;
+    `;
+    
+    const modalContent = document.createElement('div');
+    modalContent.style.cssText = `
+        background: var(--bg-secondary);
+        border: 1px solid var(--border-color);
+        border-radius: 15px;
+        padding: 30px;
+        max-width: 400px;
+        text-align: center;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        animation: slideUp 0.3s ease;
+    `;
+    
+    modalContent.innerHTML = `
+        <h3 style="margin: 0 0 15px 0; color: var(--text-primary);">Clear Chat History?</h3>
+        <p style="margin: 0 0 25px 0; color: var(--text-secondary);">This will remove all messages from the chat. This action cannot be undone.</p>
+        <div style="display: flex; gap: 10px; justify-content: center;">
+            <button id="cancel-clear" style="
+                padding: 10px 25px;
+                background: var(--bg-tertiary);
+                border: 1px solid var(--border-color);
+                border-radius: 8px;
+                color: var(--text-primary);
+                cursor: pointer;
+                font-size: 1em;
+                transition: all 0.2s ease;
+            ">Cancel</button>
+            <button id="confirm-clear" style="
+                padding: 10px 25px;
+                background: var(--secondary-gradient);
+                border: none;
+                border-radius: 8px;
+                color: white;
+                cursor: pointer;
+                font-size: 1em;
+                transition: all 0.2s ease;
+            ">Clear Chat</button>
+        </div>
+    `;
+    
+    modal.appendChild(modalContent);
+    document.body.appendChild(modal);
+    
+    // Event listeners
+    document.getElementById('cancel-clear').addEventListener('click', () => {
+        modal.style.animation = 'fadeOut 0.2s ease';
+        setTimeout(() => modal.remove(), 200);
+    });
+    
+    document.getElementById('confirm-clear').addEventListener('click', () => {
         chatWindow.innerHTML = `
             <div class="welcome-message">
                 <i class="fas fa-robot welcome-icon"></i>
@@ -253,7 +325,17 @@ function clearChat() {
             </div>
         `;
         state.messageHistory = [];
-    }
+        modal.style.animation = 'fadeOut 0.2s ease';
+        setTimeout(() => modal.remove(), 200);
+    });
+    
+    // Close on backdrop click
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            modal.style.animation = 'fadeOut 0.2s ease';
+            setTimeout(() => modal.remove(), 200);
+        }
+    });
 }
 
 // Toggle voice
@@ -358,8 +440,13 @@ document.querySelectorAll(".faq-toggle").forEach(btn => {
 
 // FAQ question click handlers
 document.querySelectorAll(".faq-q").forEach(q => {
+    // Store clean question text in data attribute for easier access
+    const iconElement = q.querySelector('i');
+    const cleanText = iconElement ? q.textContent.replace(iconElement.textContent, '').trim() : q.textContent.trim();
+    q.setAttribute('data-question', cleanText);
+    
     q.addEventListener("click", () => {
-        const questionText = q.textContent.replace(/^\s*[\s\S]*?\s/, '').trim(); // Remove icon
+        const questionText = q.getAttribute('data-question');
         userInput.value = questionText;
         sendMessage(questionText);
         

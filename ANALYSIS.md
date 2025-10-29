@@ -52,9 +52,9 @@ Kalvium-s-ai-by-student/
 - Typing indicator simulation for better UX
 
 **Critical Issue Found and Fixed:**
-- ❌ **Duplicate Function Definition**: The `sendMessage()` function was defined twice (lines 80-107 and 158-188)
-  - First definition: Basic chat without TTS
-  - Second definition: Complete implementation with TTS
+- ❌ **Duplicate Function Definition**: The `sendMessage()` function was defined twice in the original file
+  - First definition: Basic chat without TTS (starting around line 79)
+  - Second definition: Complete implementation with TTS (later in the file)
   - **Impact:** JavaScript uses the last definition, but duplicate code causes:
     - Confusion for maintainers
     - Unnecessary code bloat (32 extra lines)

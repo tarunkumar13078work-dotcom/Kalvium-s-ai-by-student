@@ -1,4 +1,7 @@
-// Predefined Q&A with at least 50 entries
+// Kalvium's AI Assistant - Professional Edition
+// Enhanced with modern features and better UX
+
+// Predefined Q&A database
 const qaList = {
     "What courses do you offer?": "Noorul Islam University offers undergraduate and postgraduate programs in engineering, technology, and management, including a BE in AI & ML.",
     "College timing?": "College hours are typically 9 AM to 5 PM, Monday through Friday.",
@@ -55,103 +58,329 @@ const qaList = {
     "What is an API?": "API stands for Application Programming Interface; it's a set of rules that allows programs to communicate with each other."
 };
 
-// Get chat elements
+// Global state management
+const state = {
+    voiceEnabled: true,
+    isDarkTheme: true,
+    messageHistory: []
+};
+
+// DOM elements
 const chatWindow = document.getElementById("chat-window");
 const userInput = document.getElementById("user-input");
 const sendBtn = document.getElementById("send-btn");
+const clearChatBtn = document.getElementById("clear-chat");
+const voiceToggleBtn = document.getElementById("voice-toggle");
+const themeToggleBtn = document.getElementById("theme-toggle");
+const sidebarToggle = document.getElementById("sidebar-toggle");
+const sidebar = document.getElementById("faq-menu");
+const faqSearch = document.getElementById("faq-search");
 
-// Normalize text (lowercase, remove punctuation) for matching
+// Utility: Normalize text for better matching
 function normalize(text) {
     return text.toLowerCase().replace(/[^a-z0-9 ]/g, "").trim();
 }
 
-// Find answer by matching normalized question
+// Find answer with fuzzy matching support
 function findAnswer(question) {
     const normalizedQuestion = normalize(question);
+    
+    // Exact match
     for (let q in qaList) {
         if (normalize(q) === normalizedQuestion) {
             return qaList[q];
         }
     }
+    
+    // Partial match (contains)
+    for (let q in qaList) {
+        if (normalize(q).includes(normalizedQuestion) || normalizedQuestion.includes(normalize(q))) {
+            return qaList[q];
+        }
+    }
+    
     return null;
 }
 
-// Speak text using Web Speech API
+// Text-to-Speech with better voice selection
 function speak(text) {
-    if ('speechSynthesis' in window) {
-        const utterance = new SpeechSynthesisUtterance(text);
-        utterance.lang = 'en-US'; // you can change language
-        utterance.pitch = 1; // default 1 (0–2)
-        utterance.rate = 1; // default 1 (0.1–10)
-        utterance.volume = 1; // 0–1
-        // optional: choose a specific voice if available
-        // const voices = window.speechSynthesis.getVoices();
-        // utterance.voice = voices.find(v => v.name.includes("Female")) || voices[0];
-        window.speechSynthesis.speak(utterance);
+    if (!state.voiceEnabled || !('speechSynthesis' in window)) return;
+    
+    // Cancel any ongoing speech
+    window.speechSynthesis.cancel();
+    
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'en-US';
+    utterance.pitch = 1;
+    utterance.rate = 1;
+    utterance.volume = 1;
+    
+    // Try to use a better voice if available
+    const voices = window.speechSynthesis.getVoices();
+    const preferredVoice = voices.find(v => v.name.includes('Google') || v.name.includes('Female')) || voices[0];
+    if (preferredVoice) {
+        utterance.voice = preferredVoice;
+    }
+    
+    window.speechSynthesis.speak(utterance);
+}
+
+// Get current timestamp
+function getTimestamp() {
+    const now = new Date();
+    return now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+}
+
+// Create message wrapper with avatar
+function createMessageWrapper(isUser = false) {
+    const wrapper = document.createElement("div");
+    wrapper.className = `message-wrapper ${isUser ? 'user-wrapper' : 'bot-wrapper'}`;
+    
+    const avatar = document.createElement("div");
+    avatar.className = `message-avatar ${isUser ? 'user-avatar' : 'bot-avatar'}`;
+    avatar.innerHTML = isUser ? '<i class="fas fa-user"></i>' : '<i class="fas fa-robot"></i>';
+    
+    const messageContainer = document.createElement("div");
+    messageContainer.style.display = 'flex';
+    messageContainer.style.flexDirection = 'column';
+    messageContainer.style.gap = '5px';
+    messageContainer.style.maxWidth = '70%';
+    
+    if (isUser) {
+        wrapper.appendChild(messageContainer);
+        wrapper.appendChild(avatar);
     } else {
-        console.log("Sorry, your browser does not support speech synthesis.");
+        wrapper.appendChild(avatar);
+        wrapper.appendChild(messageContainer);
+    }
+    
+    return { wrapper, messageContainer };
+}
+
+// Create typing indicator
+function createTypingIndicator() {
+    const { wrapper, messageContainer } = createMessageWrapper(false);
+    
+    const indicator = document.createElement("div");
+    indicator.className = "typing-indicator";
+    indicator.innerHTML = '<div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>';
+    
+    messageContainer.appendChild(indicator);
+    return wrapper;
+}
+
+// Remove welcome message
+function removeWelcomeMessage() {
+    const welcomeMsg = chatWindow.querySelector('.welcome-message');
+    if (welcomeMsg) {
+        welcomeMsg.style.animation = 'fadeOut 0.3s ease';
+        setTimeout(() => welcomeMsg.remove(), 300);
     }
 }
 
-// Function to send message
+// Send message function
 function sendMessage(msg) {
-    if (!msg) return;
-
-    // User message
+    if (!msg || !msg.trim()) return;
+    
+    removeWelcomeMessage();
+    
+    const message = msg.trim();
+    
+    // Create user message
+    const { wrapper: userWrapper, messageContainer: userContainer } = createMessageWrapper(true);
     const userMsg = document.createElement("div");
-    userMsg.classList.add("user-msg");
-    userMsg.textContent = msg;
-    chatWindow.appendChild(userMsg);
-    setTimeout(() => userMsg.classList.add("show"), 10);
+    userMsg.className = "user-msg";
+    userMsg.textContent = message;
+    userContainer.appendChild(userMsg);
+    
+    const userTime = document.createElement("div");
+    userTime.className = "message-time";
+    userTime.textContent = getTimestamp();
+    userContainer.appendChild(userTime);
+    
+    chatWindow.appendChild(userWrapper);
     chatWindow.scrollTop = chatWindow.scrollHeight;
-
+    
     userInput.value = "";
-
-    // Bot typing simulation
-    const botMsg = document.createElement("div");
-    botMsg.classList.add("bot-msg");
-    botMsg.textContent = "Typing...";
-    chatWindow.appendChild(botMsg);
-    setTimeout(() => botMsg.classList.add("show"), 10);
+    userInput.focus();
+    
+    // Show typing indicator
+    const typingIndicator = createTypingIndicator();
+    chatWindow.appendChild(typingIndicator);
     chatWindow.scrollTop = chatWindow.scrollHeight;
-
+    
+    // Simulate bot thinking time
     setTimeout(() => {
-        const answer = findAnswer(msg) || "Sorry, I don't know the answer to that yet!";
+        typingIndicator.remove();
+        
+        const answer = findAnswer(message) || "I'm sorry, I don't have an answer for that question yet. Please try asking something else or select a question from the FAQ sidebar.";
+        
+        // Create bot message
+        const { wrapper: botWrapper, messageContainer: botContainer } = createMessageWrapper(false);
+        const botMsg = document.createElement("div");
+        botMsg.className = "bot-msg";
         botMsg.textContent = answer;
+        botContainer.appendChild(botMsg);
+        
+        const botTime = document.createElement("div");
+        botTime.className = "message-time";
+        botTime.textContent = getTimestamp();
+        botContainer.appendChild(botTime);
+        
+        chatWindow.appendChild(botWrapper);
         chatWindow.scrollTop = chatWindow.scrollHeight;
-
-        // 🔊 Speak the answer
+        
+        // Store in history
+        state.messageHistory.push({ user: message, bot: answer, timestamp: getTimestamp() });
+        
+        // Speak the answer
         speak(answer);
-
-    }, 800);
+        
+    }, 1000 + Math.random() * 500); // Random delay for more natural feel
 }
 
-// Event listener for send button
+// Clear chat function
+function clearChat() {
+    if (state.messageHistory.length === 0) return;
+    
+    if (confirm('Are you sure you want to clear the chat history?')) {
+        chatWindow.innerHTML = `
+            <div class="welcome-message">
+                <i class="fas fa-robot welcome-icon"></i>
+                <h2>Welcome to Kalvium's AI Assistant!</h2>
+                <p>I'm here to help you with questions about college, Kalvium, and programming basics.</p>
+                <p>Select a question from the FAQ sidebar or type your own question below.</p>
+            </div>
+        `;
+        state.messageHistory = [];
+    }
+}
+
+// Toggle voice
+function toggleVoice() {
+    state.voiceEnabled = !state.voiceEnabled;
+    const icon = voiceToggleBtn.querySelector('i');
+    
+    if (state.voiceEnabled) {
+        icon.className = 'fas fa-volume-up';
+        voiceToggleBtn.classList.add('active');
+    } else {
+        window.speechSynthesis.cancel();
+        icon.className = 'fas fa-volume-mute';
+        voiceToggleBtn.classList.remove('active');
+    }
+}
+
+// Toggle theme
+function toggleTheme() {
+    state.isDarkTheme = !state.isDarkTheme;
+    document.body.classList.toggle('light-theme');
+    const icon = themeToggleBtn.querySelector('i');
+    icon.className = state.isDarkTheme ? 'fas fa-moon' : 'fas fa-sun';
+}
+
+// FAQ search functionality
+function searchFAQs() {
+    const searchTerm = normalize(faqSearch.value);
+    const allQuestions = document.querySelectorAll('.faq-q');
+    let hasVisibleQuestions = false;
+    
+    document.querySelectorAll('.faq-category').forEach(category => {
+        const questions = category.querySelectorAll('.faq-q');
+        let categoryHasVisible = false;
+        
+        questions.forEach(q => {
+            const questionText = normalize(q.textContent);
+            if (questionText.includes(searchTerm) || searchTerm === '') {
+                q.classList.remove('hidden');
+                categoryHasVisible = true;
+                hasVisibleQuestions = true;
+            } else {
+                q.classList.add('hidden');
+            }
+        });
+        
+        // Auto-expand categories with matches
+        const questionsDiv = category.querySelector('.faq-questions');
+        const toggleBtn = category.querySelector('.faq-toggle');
+        if (searchTerm && categoryHasVisible) {
+            questionsDiv.classList.add('open');
+            toggleBtn.classList.add('active');
+        }
+    });
+}
+
+// Event Listeners
 sendBtn.addEventListener("click", () => sendMessage(userInput.value));
 
-// Event listener for Enter key
 userInput.addEventListener("keydown", e => {
-    if (e.key === "Enter") {
+    if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault();
         sendMessage(userInput.value);
     }
 });
 
-// FAQ toggle and click-to-send
+clearChatBtn.addEventListener("click", clearChat);
+voiceToggleBtn.addEventListener("click", toggleVoice);
+themeToggleBtn.addEventListener("click", toggleTheme);
+
+if (sidebarToggle) {
+    sidebarToggle.addEventListener("click", () => {
+        sidebar.classList.toggle("collapsed");
+    });
+}
+
+faqSearch.addEventListener("input", searchFAQs);
+
+// FAQ toggle functionality
 document.querySelectorAll(".faq-toggle").forEach(btn => {
     btn.addEventListener("click", () => {
         const questions = btn.nextElementSibling;
+        const isOpen = questions.classList.contains("open");
+        
+        // Close all other categories
+        document.querySelectorAll(".faq-questions").forEach(q => {
+            if (q !== questions) {
+                q.classList.remove("open");
+            }
+        });
+        document.querySelectorAll(".faq-toggle").forEach(b => {
+            if (b !== btn) {
+                b.classList.remove("active");
+            }
+        });
+        
+        // Toggle current category
         questions.classList.toggle("open");
-        // Toggle plus/minus sign
-        if (btn.textContent.includes('[+]')) {
-            btn.textContent = btn.textContent.replace('[+]', '[-]');
-        } else {
-            btn.textContent = btn.textContent.replace('[-]', '[+]');
+        btn.classList.toggle("active");
+    });
+});
+
+// FAQ question click handlers
+document.querySelectorAll(".faq-q").forEach(q => {
+    q.addEventListener("click", () => {
+        const questionText = q.textContent.replace(/^\s*[\s\S]*?\s/, '').trim(); // Remove icon
+        userInput.value = questionText;
+        sendMessage(questionText);
+        
+        // Close sidebar on mobile after selection
+        if (window.innerWidth <= 968) {
+            sidebar.classList.add("collapsed");
         }
     });
 });
 
-document.querySelectorAll(".faq-q").forEach(q => {
-    q.addEventListener("click", () => {
-        sendMessage(q.textContent);
-    });
+// Load voices for speech synthesis
+if ('speechSynthesis' in window) {
+    window.speechSynthesis.onvoiceschanged = () => {
+        window.speechSynthesis.getVoices();
+    };
+}
+
+// Initialize voice toggle state
+voiceToggleBtn.classList.add('active');
+
+// Auto-focus input on load
+window.addEventListener('load', () => {
+    userInput.focus();
 });

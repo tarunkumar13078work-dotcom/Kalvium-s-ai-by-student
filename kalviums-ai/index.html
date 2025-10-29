@@ -2,94 +2,127 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Kalvium's AI</title>
+    <title>Kalvium's AI Assistant</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="AI-powered chatbot for Kalvium students - Get instant answers to your questions">
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
     <div class="container">
         <!-- FAQ Sidebar -->
         <aside id="faq-menu" class="sidebar">
-            <h2>FAQs</h2>
+            <div class="sidebar-header">
+                <h2><i class="fas fa-question-circle"></i> FAQs</h2>
+                <button id="sidebar-toggle" class="sidebar-toggle" aria-label="Toggle sidebar">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="faq-search" placeholder="Search FAQs..." />
+            </div>
             <div class="faq-category">
-                <button class="faq-toggle">About College [+]</button>
+                <button class="faq-toggle"><i class="fas fa-graduation-cap"></i> About College <i class="fas fa-chevron-down"></i></button>
                 <div class="faq-questions">
-                    <p class="faq-q">What courses do you offer?</p>
-                    <p class="faq-q">College timing?</p>
-                    <p class="faq-q">Contact info?</p>
-                    <p class="faq-q">Where is the college located?</p>
-                    <p class="faq-q">Admission process?</p>
-                    <p class="faq-q">Does the college have hostels?</p>
-                    <p class="faq-q">What is the fee structure?</p>
-                    <p class="faq-q">How is campus life?</p>
-                    <p class="faq-q">Are scholarships available?</p>
-                    <p class="faq-q">What clubs or activities exist?</p>
-                    <p class="faq-q">How do I apply for admission?</p>
-                    <p class="faq-q">What is the placement assistance?</p>
-                    <p class="faq-q">How do I reach the campus?</p>
-                    <p class="faq-q">What events are held on campus?</p>
+                    <p class="faq-q"><i class="fas fa-book"></i> What courses do you offer?</p>
+                    <p class="faq-q"><i class="fas fa-clock"></i> College timing?</p>
+                    <p class="faq-q"><i class="fas fa-phone"></i> Contact info?</p>
+                    <p class="faq-q"><i class="fas fa-map-marker-alt"></i> Where is the college located?</p>
+                    <p class="faq-q"><i class="fas fa-file-alt"></i> Admission process?</p>
+                    <p class="faq-q"><i class="fas fa-home"></i> Does the college have hostels?</p>
+                    <p class="faq-q"><i class="fas fa-dollar-sign"></i> What is the fee structure?</p>
+                    <p class="faq-q"><i class="fas fa-users"></i> How is campus life?</p>
+                    <p class="faq-q"><i class="fas fa-award"></i> Are scholarships available?</p>
+                    <p class="faq-q"><i class="fas fa-lightbulb"></i> What clubs or activities exist?</p>
+                    <p class="faq-q"><i class="fas fa-clipboard-list"></i> How do I apply for admission?</p>
+                    <p class="faq-q"><i class="fas fa-briefcase"></i> What is the placement assistance?</p>
+                    <p class="faq-q"><i class="fas fa-route"></i> How do I reach the campus?</p>
+                    <p class="faq-q"><i class="fas fa-calendar-alt"></i> What events are held on campus?</p>
                 </div>
             </div>
 
             <div class="faq-category">
-                <button class="faq-toggle">About Kalvium [+]</button>
+                <button class="faq-toggle"><i class="fas fa-rocket"></i> About Kalvium <i class="fas fa-chevron-down"></i></button>
                 <div class="faq-questions">
-                    <p class="faq-q">What is Kalvium?</p>
-                    <p class="faq-q">How do Kalvium projects work?</p>
-                    <p class="faq-q">How do I submit a project?</p>
-                    <p class="faq-q">Which course am I taking?</p>
-                    <p class="faq-q">How are exercises graded?</p>
-                    <p class="faq-q">Can I access the platform on mobile?</p>
-                    <p class="faq-q">How does Kalvium help in AI & ML learning?</p>
-                    <p class="faq-q">Are there any community support groups?</p>
-                    <p class="faq-q">Can I redo a project if I make mistakes?</p>
-                    <p class="faq-q">What skills will I gain from Kalvium?</p>
-                    <p class="faq-q">Does Kalvium offer internships?</p>
-                    <p class="faq-q">How do I contact support?</p>
-                    <p class="faq-q">Is Kalvium free or paid?</p>
-                    <p class="faq-q">Can I collaborate with others on projects?</p>
-                    <p class="faq-q">Will I receive a certificate?</p>
-                    <p class="faq-q">In which programming languages are projects available?</p>
+                    <p class="faq-q"><i class="fas fa-info-circle"></i> What is Kalvium?</p>
+                    <p class="faq-q"><i class="fas fa-cogs"></i> How do Kalvium projects work?</p>
+                    <p class="faq-q"><i class="fas fa-upload"></i> How do I submit a project?</p>
+                    <p class="faq-q"><i class="fas fa-chalkboard-teacher"></i> Which course am I taking?</p>
+                    <p class="faq-q"><i class="fas fa-check-circle"></i> How are exercises graded?</p>
+                    <p class="faq-q"><i class="fas fa-mobile-alt"></i> Can I access the platform on mobile?</p>
+                    <p class="faq-q"><i class="fas fa-brain"></i> How does Kalvium help in AI & ML learning?</p>
+                    <p class="faq-q"><i class="fas fa-comments"></i> Are there any community support groups?</p>
+                    <p class="faq-q"><i class="fas fa-redo"></i> Can I redo a project if I make mistakes?</p>
+                    <p class="faq-q"><i class="fas fa-chart-line"></i> What skills will I gain from Kalvium?</p>
+                    <p class="faq-q"><i class="fas fa-user-tie"></i> Does Kalvium offer internships?</p>
+                    <p class="faq-q"><i class="fas fa-question"></i> How do I contact support?</p>
+                    <p class="faq-q"><i class="fas fa-money-bill"></i> Is Kalvium free or paid?</p>
+                    <p class="faq-q"><i class="fas fa-user-friends"></i> Can I collaborate with others on projects?</p>
+                    <p class="faq-q"><i class="fas fa-certificate"></i> Will I receive a certificate?</p>
+                    <p class="faq-q"><i class="fas fa-code"></i> In which programming languages are projects available?</p>
                 </div>
             </div>
 
             <div class="faq-category">
-                <button class="faq-toggle">Basics of Programming [+]</button>
+                <button class="faq-toggle"><i class="fas fa-laptop-code"></i> Basics of Programming <i class="fas fa-chevron-down"></i></button>
                 <div class="faq-questions">
-                    <p class="faq-q">What is programming?</p>
-                    <p class="faq-q">What is Python?</p>
-                    <p class="faq-q">What is AI & ML?</p>
-                    <p class="faq-q">What is an algorithm?</p>
-                    <p class="faq-q">What is a variable?</p>
-                    <p class="faq-q">What is a function?</p>
-                    <p class="faq-q">What is a loop?</p>
-                    <p class="faq-q">What is object-oriented programming (OOP)?</p>
-                    <p class="faq-q">What is a class and an object?</p>
-                    <p class="faq-q">What are data structures?</p>
-                    <p class="faq-q">What is recursion?</p>
-                    <p class="faq-q">What is machine learning?</p>
-                    <p class="faq-q">What is a neural network?</p>
-                    <p class="faq-q">What is a dataset?</p>
-                    <p class="faq-q">What is version control?</p>
-                    <p class="faq-q">What is a for loop?</p>
-                    <p class="faq-q">What is a while loop?</p>
-                    <p class="faq-q">What are lists in Python?</p>
-                    <p class="faq-q">What are dictionaries in Python?</p>
-                    <p class="faq-q">What is an IDE?</p>
-                    <p class="faq-q">What is Git?</p>
-                    <p class="faq-q">What is JSON?</p>
-                    <p class="faq-q">What is an API?</p>
+                    <p class="faq-q"><i class="fas fa-terminal"></i> What is programming?</p>
+                    <p class="faq-q"><i class="fab fa-python"></i> What is Python?</p>
+                    <p class="faq-q"><i class="fas fa-robot"></i> What is AI & ML?</p>
+                    <p class="faq-q"><i class="fas fa-project-diagram"></i> What is an algorithm?</p>
+                    <p class="faq-q"><i class="fas fa-box"></i> What is a variable?</p>
+                    <p class="faq-q"><i class="fas fa-function"></i> What is a function?</p>
+                    <p class="faq-q"><i class="fas fa-sync"></i> What is a loop?</p>
+                    <p class="faq-q"><i class="fas fa-cube"></i> What is object-oriented programming (OOP)?</p>
+                    <p class="faq-q"><i class="fas fa-cubes"></i> What is a class and an object?</p>
+                    <p class="faq-q"><i class="fas fa-database"></i> What are data structures?</p>
+                    <p class="faq-q"><i class="fas fa-layer-group"></i> What is recursion?</p>
+                    <p class="faq-q"><i class="fas fa-brain"></i> What is machine learning?</p>
+                    <p class="faq-q"><i class="fas fa-network-wired"></i> What is a neural network?</p>
+                    <p class="faq-q"><i class="fas fa-table"></i> What is a dataset?</p>
+                    <p class="faq-q"><i class="fab fa-git-alt"></i> What is version control?</p>
+                    <p class="faq-q"><i class="fas fa-repeat"></i> What is a for loop?</p>
+                    <p class="faq-q"><i class="fas fa-sync-alt"></i> What is a while loop?</p>
+                    <p class="faq-q"><i class="fas fa-list"></i> What are lists in Python?</p>
+                    <p class="faq-q"><i class="fas fa-book-open"></i> What are dictionaries in Python?</p>
+                    <p class="faq-q"><i class="fas fa-edit"></i> What is an IDE?</p>
+                    <p class="faq-q"><i class="fab fa-github"></i> What is Git?</p>
+                    <p class="faq-q"><i class="fas fa-file-code"></i> What is JSON?</p>
+                    <p class="faq-q"><i class="fas fa-plug"></i> What is an API?</p>
                 </div>
             </div>
         </aside>
 
         <!-- Chat Area -->
         <div class="chat-container">
-            <h1>Kalvium's AI 🤖</h1>
-            <div id="chat-window"></div>
+            <div class="chat-header">
+                <h1><i class="fas fa-robot"></i> Kalvium's AI Assistant</h1>
+                <div class="chat-controls">
+                    <button id="theme-toggle" class="control-btn" aria-label="Toggle theme" title="Toggle theme">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                    <button id="voice-toggle" class="control-btn" aria-label="Toggle voice" title="Toggle voice">
+                        <i class="fas fa-volume-up"></i>
+                    </button>
+                    <button id="clear-chat" class="control-btn" aria-label="Clear chat" title="Clear chat">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+            <div id="chat-window">
+                <div class="welcome-message">
+                    <i class="fas fa-robot welcome-icon"></i>
+                    <h2>Welcome to Kalvium's AI Assistant!</h2>
+                    <p>I'm here to help you with questions about college, Kalvium, and programming basics.</p>
+                    <p>Select a question from the FAQ sidebar or type your own question below.</p>
+                </div>
+            </div>
             <div class="input-area">
-                <input type="text" id="user-input" placeholder="Type your question...">
-                <button id="send-btn">Send</button>
+                <input type="text" id="user-input" placeholder="Type your question..." autocomplete="off">
+                <button id="send-btn" aria-label="Send message">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
             </div>
         </div>
     </div>

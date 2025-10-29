@@ -76,67 +76,6 @@ function findAnswer(question) {
     return null;
 }
 
-// Function to send message
-function sendMessage(msg) {
-    if (!msg) return;
-
-    // Create and display user message
-    const userMsg = document.createElement("div");
-    userMsg.classList.add("user-msg");
-    userMsg.textContent = msg;
-    chatWindow.appendChild(userMsg);
-    setTimeout(() => userMsg.classList.add("show"), 10);
-    chatWindow.scrollTop = chatWindow.scrollHeight;
-
-    userInput.value = "";
-
-    // Simulate bot typing indicator
-    const botMsg = document.createElement("div");
-    botMsg.classList.add("bot-msg");
-    botMsg.textContent = "Typing...";
-    chatWindow.appendChild(botMsg);
-    setTimeout(() => botMsg.classList.add("show"), 10);
-    chatWindow.scrollTop = chatWindow.scrollHeight;
-
-    // Generate answer after delay
-    setTimeout(() => {
-        const answer = findAnswer(msg) || "Sorry, I don't know the answer to that yet!";
-        botMsg.textContent = answer;
-        chatWindow.scrollTop = chatWindow.scrollHeight;
-    }, 800);
-}
-
-// Event listener for send button
-sendBtn.addEventListener("click", () => sendMessage(userInput.value));
-
-// Event listener for Enter key
-userInput.addEventListener("keydown", e => {
-    if (e.key === "Enter") {
-        sendMessage(userInput.value);
-    }
-});
-
-// FAQ toggle and click-to-send
-document.querySelectorAll(".faq-toggle").forEach(btn => {
-    btn.addEventListener("click", () => {
-        const questions = btn.nextElementSibling;
-        questions.classList.toggle("open");
-        // Toggle plus/minus sign
-        if (btn.textContent.includes('[+]')) {
-            btn.textContent = btn.textContent.replace('[+]', '[-]');
-        } else {
-            btn.textContent = btn.textContent.replace('[-]', '[+]');
-        }
-    });
-});
-
-document.querySelectorAll(".faq-q").forEach(q => {
-    q.addEventListener("click", () => {
-        sendMessage(q.textContent);
-    });
-});
-// ... keep your qaList and existing code ...
-
 // Speak text using Web Speech API
 function speak(text) {
     if ('speechSynthesis' in window) {
@@ -186,3 +125,33 @@ function sendMessage(msg) {
 
     }, 800);
 }
+
+// Event listener for send button
+sendBtn.addEventListener("click", () => sendMessage(userInput.value));
+
+// Event listener for Enter key
+userInput.addEventListener("keydown", e => {
+    if (e.key === "Enter") {
+        sendMessage(userInput.value);
+    }
+});
+
+// FAQ toggle and click-to-send
+document.querySelectorAll(".faq-toggle").forEach(btn => {
+    btn.addEventListener("click", () => {
+        const questions = btn.nextElementSibling;
+        questions.classList.toggle("open");
+        // Toggle plus/minus sign
+        if (btn.textContent.includes('[+]')) {
+            btn.textContent = btn.textContent.replace('[+]', '[-]');
+        } else {
+            btn.textContent = btn.textContent.replace('[-]', '[+]');
+        }
+    });
+});
+
+document.querySelectorAll(".faq-q").forEach(q => {
+    q.addEventListener("click", () => {
+        sendMessage(q.textContent);
+    });
+});
